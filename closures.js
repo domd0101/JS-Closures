@@ -1,6 +1,6 @@
 /******************************************************************************\
 	#PROBLEM-01
-\******************************************************************************/
+\************* *****************************************************************/
 
 function outer() {
   var name = 'Tyler';
@@ -15,18 +15,12 @@ closure over the name variable. Invoke outer saving the return value into
 another variable called 'inner'. */
 
 // Code Here
+var inner = outer();
 
 //Once you do that, invoke inner.
 
 //Code Here
-
-
-
-
-
-
-
-
+inner();
 
 
 /******************************************************************************\
@@ -48,12 +42,9 @@ in your console. */
 
   //Code Here
 
+var callJake = callFriend('Jake');
 
-
-
-
-
-
+callJake('435-555-9248');
 
 
 /******************************************************************************\
@@ -65,13 +56,20 @@ in your console. */
 properly. */
 
 //Code Here
+function makeCounter(){
+  var i=0;
+  return function(){
+    i++;
+    return i;
+  }
+}
 
 //Uncomment this once you make your function
-//   var count = makeCounter();
-//   count(); // 1
-//   count(); // 2
-//   count(); // 3
-//   count(); // 4
+  var count = makeCounter();
+  count(); // 1
+  count(); // 2
+  count(); // 3
+  count(); // 4
 
 
 
@@ -91,26 +89,31 @@ properly. */
 up/down counter. The first function is called inc, this function is responsible
 for incrementing the value once. The second function is called dec, this
 function is responsible for decrementing the value by one. You will need to use
-the module pattern to achieve this. 
-Information on the module pattern available here: 
+the module pattern to achieve this.
+Information on the module pattern available here:
 http://stackoverflow.com/questions/17776940/javascript-module-pattern-with-example?answertab=votes#tab-top
 */
 
 function counterFactory(value) {
-
   // Code here.
-
-
-  return {
-  }
+  return{ inc: function(){
+          value++;
+          return value;
+          },
+          dec: function(){
+          value--;
+          return value;
+          }
+        }
 }
 
 
 counter = counterFactory(10);
-// counter.inc() // 11
-// counter.inc() // 12
-// counter.inc() // 13
-// counter.dec() // 12
+
+counter.inc() // 11
+counter.inc() // 12
+counter.inc() // 13
+counter.dec() // 12
 
 
 
@@ -134,20 +137,17 @@ function motivation(firstname, lastname) {
   var welcomeText = 'You\'re doing awesome, keep it up ';
 
   // code message function here.
+  function message(){
+    return "You're doing awesome, keep it up "+firstname+" "+lastname+".";
 
+  }
 
   //Uncommment this to return the value of your invoked message function
-  //return message();
+  return message();
 
 }
 
 motivation('Billy', 'Bob'); // 'You're doing awesome keep it up Billy Bob.
-
-
-
-
-
-
 
 
 
@@ -176,10 +176,12 @@ var module = (function() {
   // outside our lexical scope
   return {
     // Code here.
+    publicMethod : function(){
+      return privateMethod();
+    }
   };
 
 })();
-
 
 
 /******************************************************************************\
@@ -190,17 +192,25 @@ var module = (function() {
 friends (friends of friends), and an array of all users. These arrays may share
 users. Write a function that takes in our existing friends and returns
 a function that will tell us if a given user is not already a friend. */
-var friends = ["Tom", "Dick", "Harry"];
+var friends = ["Harry","Tom", "Dick" ];
 var secondLevelFriends = ["Anne", "Harry", "Quinton"];
 var allUsers = ["Tom", "Dick", "Harry", "Anne", "Quinton", "Katie", "Mary"];
 
 function findPotentialFriends(existingFriends) {
 
-}
+  return function(existingFriends){
+        for (var i = 0; i < friends.length; i++) {
+            if(friends.indexOf(existingFriends) !== -1){
+              return false
+            }
+        }
+        return true
+    }
+  }
 
-var isNotAFriend = findPotentialFriends( friends );
-// isNotAFriend(allUsers[0]); // false
-// isNotAFriend(secondLevelFriends[2]); // true
+var isNotAFriend = findPotentialFriends(friends);
+//isNotAFriend(allUsers[0]); // false
+//isNotAFriend(secondLevelFriends[2]); // true
 
 
 /******************************************************************************\
@@ -210,8 +220,8 @@ var isNotAFriend = findPotentialFriends( friends );
 method, find all potential second level friends as well as potential friends
 from allUsers. */
 
-var potentialSecondLevelFriends = "?";
-var allPotentialFriends = "?";
+var potentialSecondLevelFriends = secondLevelFriends.filter(findPotentialFriends(friends));
+var allPotentialFriends = allUsers.filter(findPotentialFriends(friends));
 
 
 /******************************************************************************\
@@ -235,10 +245,12 @@ to 5. What we need to do is console.log(i) so that it logs like so:
  */
 
 function timeOutCounter() {
+  function closure(num){
+    return function(){
+      console.log(num);
+    }
+  }
   for (var i = 0; i <= 5; i++) {
-    setTimeout(function() {
-    	console.log(i)
-	}, i * 1000)
+    setTimeout(closure(i), i * 1000)
   }
 }
-timeOutCounter();
